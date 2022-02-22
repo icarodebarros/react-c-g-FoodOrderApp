@@ -5,6 +5,7 @@ import CartItem from './CartItem';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
 import Checkout from './Checkout';
+import environment from '../../environment/environment';
 
 const Cart = (props) => {
   const [isCheckout, setIsCheckout] = useState(false);
@@ -26,7 +27,7 @@ const Cart = (props) => {
   };
 
   const submitOrderHandler = (userData) => {
-    fetch('https://<FAKE_PATH>.firebaseio.com/orders.json', {
+    fetch(environment.FIREBASE_URL + '/orders.json', {
       method: 'POST',
       body: JSON.stringify({
         user: userData,

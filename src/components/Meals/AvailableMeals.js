@@ -3,13 +3,7 @@ import { useEffect, useState } from 'react';
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
 import classes from './AvailableMeals.module.css';
-
-/**
- * Using Firebase (Realtime Database) on test mode
- */
-  const URL_BASE = "https://<FAKE_URL>.firebaseio.com";
-
-
+import environment from '../../environment/environment';
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
@@ -18,7 +12,7 @@ const AvailableMeals = () => {
 
   useEffect(() => {
     const fetchMeals = async () => {
-      const response = await fetch(URL_BASE + '/meals.json');
+      const response = await fetch(environment.FIREBASE_URL + '/meals.json');
 
       if (!response.ok) {
         throw new Error('Something went wrong!');
