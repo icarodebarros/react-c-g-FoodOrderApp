@@ -7,16 +7,23 @@ import classes from './AvailableMeals.module.css';
 /**
  * Using Firebase (Realtime Database) on test mode
  */
-  const URL_BASE = "https://fakeurl.firebaseio.com/";
+  const URL_BASE = "https://<FAKE_URL>.firebaseio.com";
 
 
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [httpError, setHttpError] = useState();
 
   useEffect(() => {
     const fetchMeals = async () => {
       const response = await fetch(URL_BASE + '/meals.json');
+
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
       const responseData = await response.json();
 
       const loadedMeals = [];
@@ -31,15 +38,35 @@ const AvailableMeals = () => {
       }
 
       setMeals(loadedMeals);
+      setIsLoading(false);
     };
 
-    fetchMeals();
+    fetchMeals().catch((error) => {
+      setIsLoading(false);
+      setHttpError(error.message);
+    });
   }, []);
+
+  if (isLoading) {
+    return (
+      <section className={classes.MealsLoading}>
+        <p>Loading...</p>
+      </section>
+    );
+  }
+
+  if (httpError) {
+    return (
+      <section className={classes.MealsError}>
+        <p>{httpError}</p>
+      </section>
+    );
+  }
 
   const mealsList = meals.map((meal) => (
     <MealItem
-      id={meal.id}
       key={meal.id}
+      id={meal.id}
       name={meal.name}
       description={meal.description}
       price={meal.price}
